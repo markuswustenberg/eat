@@ -1,15 +1,18 @@
 .PHONY: build
 build:
-	go build -o eat main.go
+	@go build -o eat main.go
 
 .PHONY: build
 run: build
-	./eat
+	@./eat
 
 .PHONY: demo
-demo: build
-	mkdir -p demo
-	dd if=/dev/urandom of=demo/yummy.bin bs=1024 count=100000
-	dd if=/dev/urandom of=demo/nomnom.bin bs=1024 count=100000
-	mv eat demo/
-	cd demo && ./eat
+demo: build prepare-food
+	@mv eat demo/
+	@cd demo && ./eat
+
+.PHONY: prepare-food
+prepare-food:
+	@mkdir -p demo
+	@dd if=/dev/urandom of=demo/yummy.bin bs=1024 count=10000 &> /dev/null
+	@dd if=/dev/urandom of=demo/nomnom.bin bs=1024 count=10000 &> /dev/null
