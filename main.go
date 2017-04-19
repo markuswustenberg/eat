@@ -9,11 +9,14 @@ import (
 )
 
 const (
-	confused    = "🤔"
-	openMouth   = "😬"
-	closedMouth = "😐"
-	dead        = "💀"
+	confused   = "🤔"
+	openMouth  = "😮"
+	teethMouth = "😬"
+	fearful    = "😱"
+	dead       = "💀"
 )
+
+var tick = 0
 
 func main() {
 	for {
@@ -28,7 +31,7 @@ func main() {
 			if file.IsDir() || file.Size() == 0 || file.Name() == "eat" {
 				continue
 			}
-			eat(file)
+			eat(file, true)
 			eaten = true
 		}
 
@@ -38,7 +41,8 @@ func main() {
 				face(confused)
 				break
 			}
-			eat(me)
+			face(fearful)
+			eat(me, false)
 			face(dead)
 			break
 		}
@@ -46,14 +50,15 @@ func main() {
 	fmt.Println()
 }
 
-func eat(file os.FileInfo) {
+func eat(file os.FileInfo, changeFace bool) {
 	currentSize := file.Size()
-	tick := 0
 	for currentSize > 0 {
-		if tick%2 == 0 {
-			face(openMouth)
-		} else {
-			face(closedMouth)
+		if changeFace {
+			if tick%2 == 0 {
+				face(openMouth)
+			} else {
+				face(teethMouth)
+			}
 		}
 
 		biteSize := int64(math.Min(float64(currentSize), 1024*1024))
